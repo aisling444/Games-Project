@@ -1,0 +1,29 @@
+Week 9 Wednesday Team Meeting
+
+Aisling - 
+Main Menu Picture - 1920x1080
+Cutscene start - 1920x1080
+broken key drawing
+witch hat & recolour of evil stepmother
+
+Zuzanna -
+Kitchen tile set 60x60
+Dragon character: nest, egg, baby dragon. 
+
+Caithlín -
+Animate characters & doors opening etc
+Do enemies.
+
+Jane -
+Combat System (health, attack, attack range, walk speed, attack speed).
+Program player (3 health, 1 attack, 1 attack range, 1 walk speed, 1 attack speed) for a start 
+
+Niamh -
+Primary: Background instrumental music for main menu & beginning cutscene.
+Secondary: Puzzles, 1x per floor. 
+
+Luigi -
+Doors close upon entrance to room, reopen when room is beaten.
+Finish room randomization.
+
+Due weekend/Tuesday latest.
