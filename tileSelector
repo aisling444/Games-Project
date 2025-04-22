@@ -1,0 +1,124 @@
+using UnityEngine;
+using UnityEngine.Tilemaps;
+using System.Collections;
+
+public class TileSelector : MonoBehaviour
+{
+    public Tilemap tilemap;
+    public Tilemap overlayTilemap;
+    public TileBase correctTile;
+    public TileBase wrongTile;
+    public Camera mainCamera;
+    public Transform playerTransform;
+    public float moveDuration = 0.3f;
+    private Vector3Int lastSelectedGridPosition;
+    void Start()
+
+    {
+        if (playerTransform == null)
+        {
+            GameObject playerObj = GameObject.FindWithTag("Player");
+            if (playerObj != null)
+            {
+                playerTransform = playerObj.transform;
+                Debug.Log("Player found and assigned automatically.");
+            }
+            else
+            {
+                Debug.LogWarning("No GameObject with tag 'Player' found.");
+            }
+        }
+        if (tilemap == null)
+        {
+            tilemap = GameObject.Find("Tilemap").GetComponent<Tilemap>(); // Adjust the name based on your GameObject name
+        }
+
+        if (overlayTilemap == null)
+        {
+            overlayTilemap = GameObject.Find("OverlayTilemap").GetComponent<Tilemap>(); // Adjust the name based on your GameObject name
+        }
+
+    }
+
+    private void Update()
+    {
+        // Handle mouse clicks
+        if (Input.GetMouseButtonDown(0))
+        {
+            Vector3 mousePos = Input.mousePosition;
+            mousePos.z = 10f; // Set z to 10 because camera is at -10
+
+            // Convert mouse position to world position
+            Vector3 worldPos = mainCamera.ScreenToWorldPoint(mousePos);
+
+            // Convert world position to grid position
+            Vector3Int gridPos = tilemap.WorldToCell(worldPos);
+            lastSelectedGridPosition = gridPos;
+
+            // Check if there is a tile at the grid position
+            if (tilemap.HasTile(gridPos))
+            {
+                // Get the world position of the tile center
+                Vector3 tileWorldPos = tilemap.GetCellCenterWorld(gridPos);
+
+                // Move the player to the center of the tile
+                MovePlayerToTile(tileWorldPos);
+
+                // Check if the clicked tile is correct
+                bool wasCorrect = DanceManager.Instance.TileSelected(gridPos);
+
+                // Provide visual feedback (correct or wrong)
+                overlayTilemap.SetTile(gridPos, wasCorrect ? correctTile : wrongTile);
+
+                // Clear the feedback after a short delay
+                StartCoroutine(ClearOverlayAfterDelay(gridPos, 0.3f));
+            }
+        }
+    }
+
+    private void MovePlayerToTile(Vector3 worldPosition)
+    {
+        StartCoroutine(MoveToPosition(worldPosition));
+    }
+
+    private IEnumerator MoveToPosition(Vector3 targetPosition)
+    {
+        Vector3 start = playerTransform.position;
+        float elapsed = 0f;
+
+        while (elapsed < moveDuration)
+        {
+            playerTransform.position = Vector3.Lerp(start, targetPosition, elapsed / moveDuration);
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        // Ensure the player reaches the target position
+        playerTransform.position = targetPosition;
+    }
+
+    private IEnumerator ClearOverlayAfterDelay(Vector3Int position, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        overlayTilemap.SetTile(position, null);  // Clear the overlay tile
+    }
+}
+
+
+
+    
+
+
+
+
+
+   
+   
+
+
+
+
+
+
+
+
